@@ -7,6 +7,9 @@
 //
 
 import UIKit
+import Photos
+
+//let globalImageManager = PHCachingImageManager()
 
 @UIApplicationMain
 class AppDelegate: UIResponder, UIApplicationDelegate {

@@ -8,11 +8,14 @@
 
 import UIKit
 import AssetsLibrary
+import Photos
 
 class FirstViewController: UIViewController, UINavigationControllerDelegate, UIImagePickerControllerDelegate {
     
     @IBOutlet weak var myImageView: UIImageView!
     
+    let imageManager = PHCachingImageManager()
+    var displayedAsset : PHAsset?
     let libraryPicker = UIImagePickerController()
     let cameraPicker = UIImagePickerController()
     
@@ -20,13 +23,14 @@ class FirstViewController: UIViewController, UINavigationControllerDelegate, UII
     var alertController = UIAlertController(title: "Hey", message: "we need permission to open your photos", preferredStyle: UIAlertControllerStyle.Alert)
     
     @IBAction func getPhotoButtonPressed(sender: AnyObject) {
-        let authStatus = ALAssetsLibrary.authorizationStatus()
-        let needsPermission = !(authStatus == ALAuthorizationStatus.Authorized)
-        if (needsPermission) {
-            self.presentViewController(alertController, animated: true, completion: nil)
-        } else {
-            self.presentViewController(self.sheetController, animated: true, completion: nil)
-        }
+//        let authStatus = ALAssetsLibrary.authorizationStatus()
+//        let needsPermission = !(authStatus == ALAuthorizationStatus.Authorized)
+//        if (needsPermission) {
+//            self.presentViewController(alertController, animated: true, completion: nil)
+//        } else {
+//            self.presentViewController(self.sheetController, animated: true, completion: nil)
+//        }
+        self.performSegueWithIdentifier("toCollectionVC", sender: self)
     }
                             
     override func viewDidLoad() {
@@ -75,6 +79,20 @@ class FirstViewController: UIViewController, UINavigationControllerDelegate, UII
         self.dismissViewControllerAnimated(true, completion: nil)
     }
 
+    override func viewWillAppear(animated: Bool) {
+        if displayedAsset != nil {
+            imageManager.requestImageForAsset(self.displayedAsset!,
+                targetSize: CGSize(width: CGRectGetWidth(self.myImageView.frame),
+                    height: CGRectGetHeight(self.myImageView.frame)),
+                contentMode: PHImageContentMode.AspectFill, options: nil)
+                { (result : UIImage!, [NSObject : AnyObject]!) -> Void
+                    in
+                    self.myImageView.image = result
+            }
+        } else {
+            println("no asset to load")
+        }
+    }
 
 }
 
