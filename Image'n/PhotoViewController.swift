@@ -20,7 +20,7 @@ class PhotoViewController: UIViewController, UICollectionViewDataSource, UIColle
     
     
     
-    var filterBundles : [FilterBundle] = []
+    var filters : [String] = []
     let imageManager = PHCachingImageManager()
     var passedAsset : PHAsset?
     
@@ -39,9 +39,10 @@ class PhotoViewController: UIViewController, UICollectionViewDataSource, UIColle
             in
             self.candidateImage.image = result
             }
-        
-        filterBundles.append(FilterBundle(filterName: "CISepiaTone"))
-        filterBundles.append(FilterBundle(filterName: "CISepiaTone"))
+        filters.append("CIMaximumComponent")
+        filters.append("CISepiaTone")
+        filters.append("CIColorInvert")
+        filters.append("CIMinimumComponent")
     }
 
     
@@ -55,76 +56,56 @@ class PhotoViewController: UIViewController, UICollectionViewDataSource, UIColle
     // MARK: UICollectionViewDataSource
     func collectionView(collectionView: UICollectionView!, cellForItemAtIndexPath indexPath: NSIndexPath!) -> UICollectionViewCell! {
         let cell = collectionView.dequeueReusableCellWithReuseIdentifier( "filterCell", forIndexPath: indexPath) as pictureThumbnailViewCell
-        var filterBundle = filterBundles[indexPath.item]
-        if cell.imageView != nil {
-        cell.imageView.image = filterBundle.getThumbnail()
+        var filterName = filters[indexPath.item]
+        
+        var width = CGRectGetWidth(cell.imageView.frame)
+        var height = CGRectGetHeight(cell.imageView.frame)
+        var scale = UIScreen.mainScreen().scale
+        
+        println("Height: \(height), Width:\(width), Scale:\(scale)")
+        
+//        imageManager.requestImageForAsset(passedAsset!,
+//            targetSize: CGSize(width: width * scale,
+//                height: height * scale),
+//            contentMode: PHImageContentMode.AspectFill, options: nil)
+//            { (result : UIImage!, [NSObject : AnyObject]!) -> Void
+//                in
+//                NSOperationQueue.mainQueue().addOperationWithBlock({ () -> Void in
+//                    cell.imageView.image = result
+//                })
+//        }
+
+        imageManager.requestImageForAsset(passedAsset!,
+            targetSize: CGSize(width: width * scale,
+                height: height * scale),
+            contentMode: PHImageContentMode.AspectFill, options: nil)
+            { (result : UIImage!, [NSObject : AnyObject]!) -> Void
+                in
+                NSOperationQueue.mainQueue().addOperationWithBlock({ () -> Void in
+                    var thumbnail = CIImage(image: result)
+                    var filter = CIFilter(name:filterName)
+                    filter.setDefaults()
+                    filter.setValue(thumbnail, forKey: kCIInputImageKey)
+                    var filteredImage = filter.outputImage
+                    var filteredThumbnail = UIImage(CIImage: filteredImage)
+                    cell.imageView.image = filteredThumbnail
+                })
         }
         
         return cell     }
     
     func collectionView(collectionView: UICollectionView!, numberOfItemsInSection section: Int) -> Int {
-        return filterBundles.count
+        return filters.count
     }
     
     //MARK: UICollectionViewDelegate
     
     func collectionView(collectionView: UICollectionView!, didSelectItemAtIndexPath indexPath: NSIndexPath!) {
         println("selected item at \(indexPath)")
-        applyFilterFunc("CISepiaTone", originalAsset: passedAsset!)
+        var filterName = filters[indexPath.item]
+        MyFilterClass.applyFilterToAsset(filterName, asset: passedAsset!)
+        var mainVC = self.navigationController.viewControllers[0] as FirstViewController
+        mainVC.displayedAsset = self.passedAsset!
+        self.navigationController.popToViewController(mainVC, animated: true)
     }
-    
-    
-    // MARK: Filtering
-    func applyFilterFunc(filterName: String, originalAsset: PHAsset) {
-        //can I build 'recepies' by passing an array fo filter names?
-        
-        var options = PHContentEditingInputRequestOptions()
-        options.canHandleAdjustmentData = {(data : PHAdjustmentData!) -> Bool in
-            return data.formatIdentifier == self.adjustmentFormatterIndentifier && data.formatVersion == "1.0"
-        }
-        
-        var asset = originalAsset //artafact from earlier debugging that I'm keeping around because i may repeat the process
-
-        asset.requestContentEditingInputWithOptions(options, completionHandler: { (contentEditingInput: PHContentEditingInput!, [NSObject : AnyObject]!) -> Void in
-            var url = contentEditingInput.fullSizeImageURL
-            
-            var imageToFilter = CIImage(contentsOfURL: url)
-            var orientation = contentEditingInput.fullSizeImageOrientation
-            imageToFilter = imageToFilter.imageByApplyingOrientation(orientation)
-            
-            var filter = CIFilter(name: filterName)
-            filter.setDefaults()
-            filter.setValue(imageToFilter, forKey: kCIInputImageKey)
-            var filteredImage = filter.outputImage
-            
-            if filter == nil {
-                println("You probably passed an invalid filter name")
-            }
-            
-            var cgimg = self.myCIContext.createCGImage(filteredImage, fromRect: filteredImage.extent())
-            var finalImage = UIImage(CGImage: cgimg)
-            var jpgData = UIImageJPEGRepresentation(finalImage, 0.5) //why did this make me get rid of the "compression quality:" label?
-            
-            var adjustmentData = PHAdjustmentData(formatIdentifier: self.adjustmentFormatterIndentifier, formatVersion: "1.0", data: jpgData)
-            var contentEditingOutput = PHContentEditingOutput(contentEditingInput: contentEditingInput)
-            jpgData.writeToURL(contentEditingOutput.renderedContentURL, atomically: true)
-            contentEditingOutput.adjustmentData = adjustmentData
-            
-            PHPhotoLibrary.sharedPhotoLibrary().performChanges({
-                var request = PHAssetChangeRequest(forAsset: asset)
-                request.contentEditingOutput = contentEditingOutput
-                
-                }, completionHandler: { (success : Bool, error : NSError!) -> Void in
-                    if !success {
-                        println(error.localizedDescription)
-                    }
-            })
-            var mainVC = self.navigationController.viewControllers[0] as FirstViewController
-            mainVC.displayedAsset = self.passedAsset!
-            //mainVC.loadAssetIntoImageView(self.passedAsset!)
-            self.navigationController.popToViewController(mainVC, animated: true)
-        })
-        
-    }
-
 }

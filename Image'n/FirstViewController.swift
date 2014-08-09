@@ -14,27 +14,6 @@ class FirstViewController: UIViewController, UINavigationControllerDelegate, UII
     
     @IBAction func testButton(sender: AnyObject) {
         println("test button")
-        
-        var width = CGRectGetWidth(self.myImageView.frame)
-        var height = CGRectGetHeight(self.myImageView.frame)
-        var scale = UIScreen.mainScreen().scale
-        
-        println("Height: \(height), Width:\(width), Scale:\(scale)")
-        
-        imageManager.requestImageForAsset(displayedAsset!,
-            targetSize: CGSize(width: width * scale,
-                height: height * scale),
-            contentMode: PHImageContentMode.AspectFill, options: nil)
-            { (result : UIImage!, [NSObject : AnyObject]!) -> Void
-                in
-                NSOperationQueue.mainQueue().addOperationWithBlock({ () -> Void in
-                    self.myImageView.image = result
-                })
-        }
-
-//        loadAssetIntoImageView(displayedAsset!)
-//        println(displayedAsset?.description)
-//        self.myImageView.backgroundColor = UIColor.blackColor()
     }
     
     

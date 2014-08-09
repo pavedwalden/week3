@@ -10,6 +10,7 @@
 		FA458F63199420B100373019 /* FilterBundle.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA458F62199420B100373019 /* FilterBundle.swift */; };
 		FA458F671994329F00373019 /* violentj.jpg in Resources */ = {isa = PBXBuildFile; fileRef = FA458F661994329F00373019 /* violentj.jpg */; };
 		FA458F691994348200373019 /* GridCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA458F681994348200373019 /* GridCell.swift */; };
+		FA458F6B1994830300373019 /* MyFilterClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA458F6A1994830200373019 /* MyFilterClass.swift */; };
 		FA5431E219901A6F0085D1FB /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA5431E119901A6F0085D1FB /* AppDelegate.swift */; };
 		FA5431E419901A6F0085D1FB /* FirstViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA5431E319901A6F0085D1FB /* FirstViewController.swift */; };
 		FA5431E719901A700085D1FB /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = FA5431E519901A700085D1FB /* Main.storyboard */; };
@@ -34,6 +35,7 @@
 		FA458F62199420B100373019 /* FilterBundle.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FilterBundle.swift; sourceTree = "<group>"; };
 		FA458F661994329F00373019 /* violentj.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; name = violentj.jpg; path = "Image'n/violentj.jpg"; sourceTree = "<group>"; };
 		FA458F681994348200373019 /* GridCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GridCell.swift; sourceTree = "<group>"; };
+		FA458F6A1994830200373019 /* MyFilterClass.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MyFilterClass.swift; sourceTree = "<group>"; };
 		FA5431DC19901A6F0085D1FB /* Image'n.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Image'n.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		FA5431E019901A6F0085D1FB /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		FA5431E119901A6F0085D1FB /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
@@ -95,6 +97,7 @@
 				FA5AF0171991857200DD5B52 /* MyCollectionViewController.swift */,
 				FA5AF01B1991B37000DD5B52 /* PhotoViewController.swift */,
 				FA458F62199420B100373019 /* FilterBundle.swift */,
+				FA458F6A1994830200373019 /* MyFilterClass.swift */,
 				FA5431E519901A700085D1FB /* Main.storyboard */,
 				FA458F681994348200373019 /* GridCell.swift */,
 				FA5AF019199195F900DD5B52 /* pictureThumbnailViewCell.swift */,
@@ -230,6 +233,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				FA458F6B1994830300373019 /* MyFilterClass.swift in Sources */,
 				FA5AF01A199195F900DD5B52 /* pictureThumbnailViewCell.swift in Sources */,
 				FA5431E419901A6F0085D1FB /* FirstViewController.swift in Sources */,
 				FA5431E219901A6F0085D1FB /* AppDelegate.swift in Sources */,
